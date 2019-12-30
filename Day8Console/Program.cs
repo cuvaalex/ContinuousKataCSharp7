@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Day8;
 
@@ -7,17 +8,42 @@ namespace Day8Console
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
             /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution */
-            var nbPhone = Convert.ToInt32(Console.ReadLine());
-            var listOfLines = new List<string>();
-            for(var x = 0; x < nbPhone*2; x++){
-                listOfLines.Add(Console.ReadLine());        
+            Dictionary<string, int> phoneMap = new Dictionary<string, int>();
+        
+            string input = Console.ReadLine();
+            int n = Convert.ToInt32(input);
+        
+            for (int i = 0; i < n;i++)
+            {
+                string[] values = Console.ReadLine()?.Split(' ');
+                if (values != null)
+                {
+                    string name = values[0];
+                    int number = Convert.ToInt32(values[1]);
+            
+                    phoneMap.Add(name, number);
+                }
             }
-            var book = new PhoneBook();
-            book.FilterPhoneBook(nbPhone, listOfLines).ToList().ForEach(Console.WriteLine);
-
+        
+            for (int j = 0; j < n;j++)
+            {
+                string check = Console.ReadLine();
+                if (phoneMap.ContainsKey(check))
+                {
+                    int output = phoneMap[check];
+                    Console.WriteLine("{0}={1}", check, output);
+                }
+                else
+                {
+                    Console.WriteLine("Not found");
+                }
+            }
+            
         }
     }
+    
 }
