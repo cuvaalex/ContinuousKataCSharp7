@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using NFluent;
 using Xbehave;
@@ -10,12 +11,6 @@ namespace Day8
 {
 
     public class PhoneBook {
-        public IEnumerable<string> ExtractSimilar(int nb, IReadOnlyCollection<string> lines)
-        {
-            var filteredPhoneBooks = FilterPhoneBook(nb, lines);
-            var printNice = filteredPhoneBooks;
-            return printNice.ToList();
-        }
 
         private static IEnumerable<string> ExtractPhoneBook(int nb, IEnumerable<string> textReceived)
         {
@@ -35,7 +30,7 @@ namespace Day8
             return listOfNames;
         }
         
-        private IEnumerable<string> FilterPhoneBook(int nb, IReadOnlyCollection<string> lines)
+        public IEnumerable<string> FilterPhoneBook(int nb, IReadOnlyCollection<string> lines)
         {
             var filter = ExtractListOfNames(nb, lines);
             var phoneBooks = ExtractPhoneBook(nb, lines);
@@ -48,7 +43,7 @@ namespace Day8
                 }
                 catch (Exception e)
                 {
-                    return $"{name}=Not Found";
+                    return "Not found";
                 }
             });
             return filteredPhoneBook;
@@ -59,15 +54,15 @@ namespace Day8
         [Scenario]
         [Example(3
             ,new[] {"sam 99912222", "tom 11122222", "harry 12299933", "sam", "edward", "harry"}
-            ,new[] {"sam=99912222", "edward=Not found","harry=12299933"})]
+            ,new[] {"sam=99912222", "Not found","harry=12299933"})]
         public void ShouldReturnTheTupleFound(int nb, string[] textReceived, string[] expected, IEnumerable<string> actual)
         {
             $"Given the following text {textReceived}"
                 .x(() => {});
             $"When I extract the similar {nb} phonebook"
-                .x(() => actual = ExtractSimilar(nb, textReceived));
+                .x(() => actual = FilterPhoneBook(nb, textReceived));
             $"Then I expect {actual} be same than {expected}"
-                .x(() => Equal(expected, actual));
+                .x(() => Equal(expected.ToList(), actual));
         
         }
 
@@ -100,37 +95,18 @@ namespace Day8
         [Fact]
         public void ShouldExtractThe2PhoneBook()
         {
-            var expected = new Dictionary<String, String>()
+            var expected = new List<string>()
             {
-                {"sam", "99912222"},
-                {"henry", "Not found"},
-                {"tom", "11122222"},
+                "sam=99912222", "Not found", "tom=11122222"
             };
-            var lines = new string[] {"sam 99912222", "tom 11122222", "harry 12299933", "sam", "henry", "tom"};
-
+            var lines = new List<string>() {"sam 99912222", "tom 11122222", "harry 12299933", "sam", "henry", "tom"};
+            
             var actual = FilterPhoneBook(3, lines.ToList());
 
             Check.That(actual).HasSize(3);
             Check.That(actual).ContainsExactly(expected);
         }
-
-        [Fact]
-        public void ShouldNicePrintTheResult()
-        {
-            var expected = new string[]
-            {"sam=99912222"
-            ,"henry=Not found"
-            , "tom=11122222"
-            }.ToList();
-            var lines = new string[] {"sam 99912222", "tom 11122222", "harry 12299933", "sam", "henry", "tom"};
-            
-            var printResult = ExtractSimilar(3, lines.ToList());
-
-            Check.That(printResult).CountIs(3);
-            Check.That(printResult).ContainsExactly(expected);
-
-        } 
-
+        
         #endregion
     }
 }

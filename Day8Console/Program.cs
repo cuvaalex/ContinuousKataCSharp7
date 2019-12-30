@@ -16,7 +16,7 @@ namespace Day8Console
                 listOfLines.Add(Console.ReadLine());        
             }
             var book = new PhoneBook();
-            book.ExtractSimilar(nbPhone, listOfLines).ToList().ForEach(Console.WriteLine);
+            book.FilterPhoneBook(nbPhone, listOfLines).ToList().ForEach(Console.WriteLine);
 
         }
     }
