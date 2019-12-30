@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LimitedWIPSettings">
+    <option name="doNotRevertTests" value="true" />
+    <option name="notifyOnTcrRevert" value="true" />
+    <option name="tcrEnabled" value="true" />
+  </component>
+</project>
